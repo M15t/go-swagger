@@ -5,9 +5,10 @@ draft: true
 description: Contributing guide - Code style
 weight: 20
 ---
+
 # Linting
 
-Our CI run `golangci-lint` to enforce a few linting rules defined there: https://github.com/go-swagger/go-swagger/blob/master/.golangci.yml
+Our CI run `golangci-lint` to enforce a few linting rules defined there: https://github.com/M15t/go-swagger/blob/master/.golangci.yml
 
 Before you push, check your work with the golangci meta linter:
 `go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`

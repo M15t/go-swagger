@@ -3,10 +3,12 @@
 ## Purpose
 
 This directory contains a project that shows how to generate with `go-swagger`:
+
 1. a server that can return a stream of newline-delimited JSON bodies.
 2. a client that can read this stream.
 
 ## Build and run a streaming server
+
 (All following instructuctions are to be run from the directory parallel to this file.)
 
 1. Generate the code: `$ swagger generate server -f swagger.yml`
@@ -14,7 +16,9 @@ This directory contains a project that shows how to generate with `go-swagger`:
 3. Run the server: `$ $GOPATH/bin/countdown-server --port=8000`
 
 ### See the streaming output
+
 In another terminal window, request some streaming output:
+
 ```
 $ curl -v http://127.0.0.1:8000/elapse/5
 * About to connect() to 127.0.0.1 port 8000 (#0)
@@ -44,8 +48,11 @@ $ curl -v http://127.0.0.1:8000/elapse/5
 * Connection #0 to host 127.0.0.1 left intact
 $
 ```
+
 ### See an error condition
+
 Also in another terminal window, see an error message (not streaming):
+
 ```
 $ curl -v http://127.0.0.1:8000/elapse/11
 * About to connect() to 127.0.0.1 port 8000 (#0)
@@ -135,12 +142,13 @@ First and foremost, we have to realize that the "application/json" mime is not r
 describing our API. Rather, the server _streams_ chunks of individual JSON bits.
 
 The runtime does not automatically detect that fact, we need to override this, like so:
+
 ```go
 import (
   ...
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/go-swagger/go-swagger/examples/stream-server/client"
+	"github.com/M15t/go-swagger/examples/stream-server/client"
   ...
 )
 

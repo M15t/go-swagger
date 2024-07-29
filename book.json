@@ -1,9 +1,9 @@
 {
   "root": "./docs",
-  "plugins": [ "forkmegithub", "prism", "-highlight", "anchors" ],
+  "plugins": ["forkmegithub", "prism", "-highlight", "anchors"],
   "pluginsConfig": {
     "forkmegithub": {
-      "url": "https://github.com/go-swagger/go-swagger",
+      "url": "https://github.com/M15t/go-swagger",
       "color": "green"
     }
   }

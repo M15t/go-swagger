@@ -3,6 +3,7 @@ title: Dynamic API
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 # Dynamic API definition
 
 The toolkit supports building a swagger specification entirely with go code. It does allow you to serve a spec up quickly. This is one of the building blocks required to serve up stub APIs and to generate a test server with predictable responses, however this is not as bad as it sounds...
@@ -44,13 +45,13 @@ func main() {
 }
 ```
 
-[see source of this code](https://github.com/go-swagger/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-1/main.go)
+[see source of this code](https://github.com/M15t/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-1/main.go)
 
-Running this would confirm that we can in fact read a swagger spec from disk. 
-The init method enables loading of yaml based specifications. The yaml package for golang used to be licensed as GPL so we made depending on it optional. 
+Running this would confirm that we can in fact read a swagger spec from disk.
+The init method enables loading of yaml based specifications. The yaml package for golang used to be licensed as GPL so we made depending on it optional.
 
 ```sh
-git:(master) ✗ !? » go run main.go ./swagger.yml  
+git:(master) ✗ !? » go run main.go ./swagger.yml
 2016/10/08 20:50:42 loading "./swagger.yml" as contract for the server
 2016/10/08 20:50:42 Would be serving: A To Do list application
 ```
@@ -88,7 +89,7 @@ func main() {
 }
 ```
 
-[see source of this code](https://github.com/go-swagger/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-setup-invalid/main.go)
+[see source of this code](https://github.com/M15t/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-setup-invalid/main.go)
 
 This code shows how to create an api descriptor and then invoking its verification.
 Because our specification contains operations and consumes/produces definitions this program should not run.
@@ -128,7 +129,7 @@ func main() {
 	api.DefaultProduces = mediaType
 	api.RegisterConsumer(mediaType, runtime.JSONConsumer())
 	api.RegisterProducer(mediaType, runtime.JSONProducer())
-	
+
   api.RegisterOperation("GET", "/", notImplemented)
 	api.RegisterOperation("POST", "/", notImplemented)
 	api.RegisterOperation("PUT", "/{id}", notImplemented)
@@ -256,7 +257,7 @@ func itemByID(id int64) (map[string]interface{}, error) {
 }
 ```
 
-[see source of this code](https://github.com/go-swagger/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-untyped/main.go)
+[see source of this code](https://github.com/M15t/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-untyped/main.go)
 
 The backend code builds a todo-list-item store that's save for concurrent access buy guarding every operation with a lock. This is all in memory so as soon as you quit the process all your changes will be reset.
 
@@ -343,7 +344,7 @@ var destroyOne = runtime.OperationHandlerFunc(func(params interface{}) (interfac
 })
 ```
 
-[see source of this code](https://github.com/go-swagger/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-untyped/main.go)
+[see source of this code](https://github.com/M15t/go-swagger/blob/master/examples/tutorials/todo-list/dynamic-untyped/main.go)
 
 With this set up we should be able to start a server, send it some requests and get some meaningful answers.
 
@@ -364,7 +365,7 @@ Content-Length: 87
 
 #### Create new
 
-The default curl POST request should fail because we only allow:  application/io.goswagger.examples.todo-list.v1+json
+The default curl POST request should fail because we only allow: application/io.goswagger.examples.todo-list.v1+json
 
 ```
 curl -i localhost:8000 -d '{"description":"item for the list"}'

@@ -3,11 +3,14 @@ title: About using swagger as your API contract
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 <!-- Questions about swagger specs -->
+
 ## Swagger specification
 
 ### Default vs required
-_Use-Case_:  spec validation rejects default object without required properties
+
+_Use-Case_: spec validation rejects default object without required properties
 
 > If we have the default for the firstName and lastName but didn't set the username, which is required,
 > we will have an error message showing that we have to put the default for the required field "username" as well.
@@ -65,7 +68,7 @@ But I think the error message should not show even I just use `swagger generate 
 > Thus it must pass validation of the object schema.
 > As per swagger, defaults MUST validate their schema. This differs from json-Schema spec.
 
-Originally from issue [#1552](https://github.com/go-swagger/go-swagger/issues/1552).
+Originally from issue [#1552](https://github.com/M15t/go-swagger/issues/1552).
 
 _Use-Case_: `go-swagger` rejects default object that misses required properties.
 
@@ -123,11 +126,12 @@ paths:
 For some use cases, we have to, since `go-swagger` supports constructs that are not stricly swagger-compliant.
 This one is an example: some override silently take place here at generation time.
 
-Originally from issue [#1501](https://github.com/go-swagger/go-swagger/issues/1501).
+Originally from issue [#1501](https://github.com/M15t/go-swagger/issues/1501).
 
 ### type string, format int64 not respected in generator
-_Use-Case_:  when generating parameters or models from a swagger file with a definition that specifies type: string and format: int64,
- the **generation fails**.
+
+_Use-Case_: when generating parameters or models from a swagger file with a definition that specifies type: string and format: int64,
+the **generation fails**.
 
 Example:
 
@@ -151,16 +155,17 @@ Example:
 ```
 
 **Answer**: that's an invalid type. The openapi 2.0 spec says the type should be
+
 ```
 type: integer
 format: int64
 ```
 
-
-Originally from issue [#1381](https://github.com/go-swagger/go-swagger/issues/1381).
+Originally from issue [#1381](https://github.com/M15t/go-swagger/issues/1381).
 
 ### Duplicate operationId error
-_Use-Case_:  my spec indicates duplicate operationIds but for separate endpoints.
+
+_Use-Case_: my spec indicates duplicate operationIds but for separate endpoints.
 When generating a server and there are multiple endpoints, the `operations` directory in `restapi`
 contains subdirectories for each of those endpoints.
 
@@ -168,7 +173,7 @@ Example:
 
 ```yaml
 paths:
-  '/users/{id}':
+  "/users/{id}":
     parameters:
       - name: id
         in: path
@@ -180,11 +185,11 @@ paths:
       tags:
         - Users
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           schema:
-            $ref: '#/definitions/user-output'
-  '/pets/{id}':
+            $ref: "#/definitions/user-output"
+  "/pets/{id}":
     parameters:
       - name: id
         in: path
@@ -196,13 +201,14 @@ paths:
       tags:
         - Pets
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           schema:
-            $ref: '#/definitions/pet-output'
+            $ref: "#/definitions/pet-output"
 ```
 
 I am expecting a generated structure like so:
+
 ```
 └── restapi
     ...
@@ -226,5 +232,4 @@ https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#operati
 > Tools and libraries MAY use the operationId to uniquely identify an operation,
 > therefore, it is recommended to follow common programming naming conventions.
 
-Originally from issue [#1143](https://github.com/go-swagger/go-swagger/issues/1143).
-
+Originally from issue [#1143](https://github.com/M15t/go-swagger/issues/1143).

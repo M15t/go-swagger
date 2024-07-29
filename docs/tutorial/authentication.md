@@ -3,6 +3,7 @@ title: Authentication with API key
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 # Authentication sample
 
 The full code of this example is [here][example_code].
@@ -29,11 +30,9 @@ Add security principal model definition:
 
 ```yaml
 definitions:
-
-...
-
-  principal:
-    type: string
+---
+principal:
+  type: string
 ```
 
 Generate the code with a security principal:
@@ -91,9 +90,10 @@ go run ./cmd/auth-sample-server/main.go --port 35307
 Exercise auth:
 
 ```shell
-± ivan@avalon:~  
+± ivan@avalon:~
  » curl -i -H 'Content-Type: application/keyauth.api.v1+json' -H 'X-Token: abcdefuvwxyz' http://127.0.0.1:35307/api/customers
 ```
+
 ```http
 HTTP/1.1 501 Not Implemented
 Content-Type: application/keyauth.api.v1+json
@@ -102,10 +102,12 @@ Content-Length: 57
 
 "operation customers.GetID has not yet been implemented"
 ```
+
 ```shell
-± ivan@avalon:~  
+± ivan@avalon:~
  » curl -i -H 'Content-Type: application/keyauth.api.v1+json' -H 'X-Token: abcdefu' http://127.0.0.1:35307/api/customers
 ```
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/keyauth.api.v1+json
@@ -115,4 +117,4 @@ Content-Length: 47
 {"code":401,"message":"incorrect api key auth"}
 ```
 
-[example_code]: https://github.com/go-swagger/go-swagger/tree/master/examples/authentication
+[example_code]: https://github.com/M15t/go-swagger/tree/master/examples/authentication

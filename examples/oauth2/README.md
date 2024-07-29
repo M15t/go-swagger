@@ -11,7 +11,6 @@ Personas:
 - the user logs in on its Google account, which returns an access token that we will use
   with our API. This mechanism follows the 'accessCode' OAuth2 workflow.
 
-
 ### Swagger specification
 
 Given the following security definitions (in `swagger.yml` specification document):
@@ -21,8 +20,8 @@ securityDefinitions:
   OauthSecurity:
     type: oauth2
     flow: accessCode
-    authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
-    tokenUrl: 'https://www.googleapis.com/oauth2/v4/token'
+    authorizationUrl: "https://accounts.google.com/o/oauth2/v2/auth"
+    tokenUrl: "https://www.googleapis.com/oauth2/v4/token"
     scopes:
       admin: Admin scope
       user: User scope
@@ -30,13 +29,13 @@ securityDefinitions:
 
 We specify the following security requirements:
 
-- A default requirements for all endpoints: users need to be authenticated within the "user" scope by providing 
-a OAuth token (e.g. Authentication: Bearer header or `access_token` query parameter).
+- A default requirements for all endpoints: users need to be authenticated within the "user" scope by providing
+  a OAuth token (e.g. Authentication: Bearer header or `access_token` query parameter).
 
 ```yaml
 security:
   - OauthSecurity:
-    - user
+      - user
 ```
 
 - Login and callback endpoints are not restricted: this is made explicit by overriding the default security requirement with an empty array.
@@ -47,16 +46,14 @@ paths:
     get:
       summary: login through oauth2 server
       security: []
-
-...
-
-  /auth/callback:
-    get:
-      summary: return access_token
-      security: []
+---
+/auth/callback:
+  get:
+    summary: return access_token
+    security: []
 ```
 
-We need to specify a security principal in the model, to generate the server. Operations will be passed this principal as 
+We need to specify a security principal in the model, to generate the server. Operations will be passed this principal as
 parameter upon successful authentication:
 
 ```yaml
@@ -66,10 +63,10 @@ definitions:
     type: string
 ```
 
-In this example, the principal (descriptor of an identity for our API) 
+In this example, the principal (descriptor of an identity for our API)
 is just a string (i.e. the token itself).
 
-### Generate the server 
+### Generate the server
 
 ```shell
 swagger generate server -A oauthSample -P models.Principal -f ./swagger.yml
@@ -147,14 +144,14 @@ func configureAPI(api *operations.OauthSampleAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.OauthSecurityAuth = func(token string, scopes []string) (*models.Principal, error) {
-        // This handler is called by the runtime whenever a route needs authentication 
+        // This handler is called by the runtime whenever a route needs authentication
         // against the 'OAuthSecurity' scheme.
-        // It is passed a token extracted from the Authentication Bearer header, and 
+        // It is passed a token extracted from the Authentication Bearer header, and
         // the list of scopes mentioned by the spec for this route.
 
-        // NOTE: in this simple implementation, we do not check scopes against  
+        // NOTE: in this simple implementation, we do not check scopes against
         // the signed claims in the JWT token.
-        // So whatever the required scope (passed a parameter by the runtime), 
+        // So whatever the required scope (passed a parameter by the runtime),
         // this will succeed provided we get a valid token.
 
         // authenticated validates a JWT token at userInfoURL
@@ -216,13 +213,14 @@ func login(r *http.Request) middleware.Responder {
 		})
 }
 ```
+
 - Retrieving the access token
 
 ```go
 func callback(r *http.Request) (string, error) {
-    // we expect the redirected client to call us back 
+    // we expect the redirected client to call us back
     // with 2 query params: state and code.
-    // We use directly the Request params here, since we did not 
+    // We use directly the Request params here, since we did not
     // bother to document these parameters in the spec.
 
 	if r.URL.Query().Get("state") != state {
@@ -253,7 +251,6 @@ func callback(r *http.Request) (string, error) {
 }
 ```
 
-
 - Validating the token
 
 ```go
@@ -266,7 +263,7 @@ func authenticated(token string) (bool, error) {
 	}
 
 	req.Header.Add("Authorization", bearToken)
-    
+
 	cli := &http.Client{}
 	resp, err := cli.Do(req)
 	if err != nil {
@@ -285,22 +282,23 @@ func authenticated(token string) (bool, error) {
 }
 ```
 
-### Register the callback URL 
-Register your API at [google oauth2 server][google_credential], with 
+### Register the callback URL
+
+Register your API at [google oauth2 server][google_credential], with
 an OAuth ID.  
-Make sure that the callback URL is the same as set in the above code (``./restapi/configure_auth_sample.go``), e.g.:
+Make sure that the callback URL is the same as set in the above code (`./restapi/configure_auth_sample.go`), e.g.:
 
 ```
 http://127.0.0.1:12345/api/auth/callback
 ```
 
-![Google api screenshot](https://github.com/go-swagger/go-swagger/blob/master/examples/oauth2/img/google-api.png)
+![Google api screenshot](https://github.com/M15t/go-swagger/blob/master/examples/oauth2/img/google-api.png)
 
->**NOTE:** you may specify a client ID for your API during the registration process.
->A password (the API client's secret) is then delivered.
->Those are the credentials of the API itself, not the end user.
->Put these values (client ID and client's secret) in the initial 
->var declarations in `implementation.go`.
+> **NOTE:** you may specify a client ID for your API during the registration process.
+> A password (the API client's secret) is then delivered.
+> Those are the credentials of the API itself, not the end user.
+> Put these values (client ID and client's secret) in the initial
+> var declarations in `implementation.go`.
 
 ### Run the server
 
@@ -310,26 +308,28 @@ go run ./cmd/oauth-sample-server/main.go --port 12345
 
 ### Login to get the access token
 
-Get the access token through Google's oauth2 server. 
+Get the access token through Google's oauth2 server.
 
-Open the browser and access the API login url on: 
-http://127.0.0.1:12345/api/login,  which will direct you to the Google 
-login page. 
+Open the browser and access the API login url on:
+http://127.0.0.1:12345/api/login, which will direct you to the Google
+login page.
 
 Once you login with your google ID (e.g., your gmail account), the oauth2  
-``access_token`` is returned and displayed on the browser.
+`access_token` is returned and displayed on the browser.
 
 ### Exercise your authorizer
 
-``TOKEN`` is obtained from the previous step.
+`TOKEN` is obtained from the previous step.
 
 Now we may use this token to access the other endpoints published by our API.
 
 Let's try this with curl. Copy the received token and reuse it as shown below:
+
 ```shellsession
-± ivan@avalon:~  
+± ivan@avalon:~
  »  curl -i  -H 'Authorization: Bearer TOKEN' http://127.0.0.1:12345/api/customers
 ```
+
 ```http
 HTTP/1.1 501 Not Implemented
 Content-Type: application/keyauth.api.v1+json
@@ -342,17 +342,18 @@ Content-Length: 57
 Use an random string as the token:
 
 ```shellsession
-± ivan@avalon:~  
+± ivan@avalon:~
  » curl -i  -H 'Authorization: Bearer RAMDOM_TOKEN' http://127.0.0.1:12345/api/customers
 ```
+
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/keyauth.api.v1+json
 Date: Fri, 25 Nov 2016 19:16:49 GMT
 Content-Length: 47
 
-{"code":401,"message":"unauthenticated for invalid credentials"}       
+{"code":401,"message":"unauthenticated for invalid credentials"}
 ```
 
 [google_credential]: https://console.cloud.google.com/apis/credentials/
-[example_code]: https://github.com/go-swagger/go-swagger/blob/master/examples/oauth2/
+[example_code]: https://github.com/M15t/go-swagger/blob/master/examples/oauth2/

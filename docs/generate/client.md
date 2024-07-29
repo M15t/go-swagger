@@ -4,6 +4,7 @@ date: 2023-01-01T01:01:01-08:00
 draft: true
 weight: 20
 ---
+
 # Generate an API client from a swagger spec
 
 The toolkit has a command that will let you generate a client.
@@ -64,7 +65,7 @@ Help Options:
 
 ### Build a client
 
-There is an example client provided at: https://github.com/go-swagger/go-swagger/tree/master/examples/todo-list/client
+There is an example client provided at: https://github.com/M15t/go-swagger/tree/master/examples/todo-list/client
 
 To generate a client:
 
@@ -74,7 +75,6 @@ swagger generate client -f [http-url|filepath] -A [application-name] [--principa
 
 If you want to debug what the client is sending and receiving you can set the environment value DEBUG to a non-empty
 value.
-
 
 Use a default client, which has an HTTP transport:
 
@@ -142,9 +142,9 @@ func main() {
 
 The client supports 3 authentication schemes:
 
-* [Basic Auth](https://godoc.org/github.com/go-openapi/runtime/client#BasicAuth)
-* [API key auth in header or query](https://godoc.org/github.com/go-openapi/runtime/client#APIKeyAuth)
-* [Bearer token header for oauth2](https://godoc.org/github.com/go-openapi/runtime/client#BearerToken)
+- [Basic Auth](https://godoc.org/github.com/go-openapi/runtime/client#BasicAuth)
+- [API key auth in header or query](https://godoc.org/github.com/go-openapi/runtime/client#APIKeyAuth)
+- [Bearer token header for oauth2](https://godoc.org/github.com/go-openapi/runtime/client#BearerToken)
 
 ```go
 import (

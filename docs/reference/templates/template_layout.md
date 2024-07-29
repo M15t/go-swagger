@@ -3,15 +3,16 @@ title: Code generation templates
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 # Custom generation
 
 To completely customize the templates that are being considered, their file names and paths, go-swagger allows you to pass in a configuration file.
 There are basically 4 types of items that are being generated:
 
-  * [Models](https://godoc.org/github.com/go-swagger/go-swagger/generator#GenDefinition)
-  * [Operations](https://godoc.org/github.com/go-swagger/go-swagger/generator#GenOperation)
-  * [Operation groups](https://godoc.org/github.com/go-swagger/go-swagger/generator#GenOperationGroup) (tagged groups of operations)
-  * [Application](https://godoc.org/github.com/go-swagger/go-swagger/generator#GenApp)
+- [Models](https://godoc.org/github.com/M15t/go-swagger/generator#GenDefinition)
+- [Operations](https://godoc.org/github.com/M15t/go-swagger/generator#GenOperation)
+- [Operation groups](https://godoc.org/github.com/M15t/go-swagger/generator#GenOperationGroup) (tagged groups of operations)
+- [Application](https://godoc.org/github.com/M15t/go-swagger/generator#GenApp)
 
 You provide a configuration that describes the type of template, the source for where to find the template. For built-in templates the name should be prefixed with `asset:`.
 You also provide the target directory and the file name. Directory and file names are processed as templates too and allow for a number of filters.
@@ -46,7 +47,7 @@ layout:
       skip_exists: true
     - name: main
       source: asset:serverMain
-      target: "{{ joinFilePath .Target \"cmd\" (dasherize (pascalize .Name)) }}-server"
+      target: '{{ joinFilePath .Target "cmd" (dasherize (pascalize .Name)) }}-server'
       file_name: "main.go"
     - name: embedded_spec
       source: asset:swaggerJsonEmbed
@@ -83,7 +84,6 @@ layout:
       target: "{{ if gt (len .Tags) 0 }}{{ joinFilePath .Target .ServerPackage .APIPackage .Package  }}{{ else }}{{ joinFilePath .Target .ServerPackage .Package  }}{{ end }}"
       file_name: "{{ (snakize (pascalize .Name)) }}.go"
   operation_groups:
-
 ```
 
 ## Client generation

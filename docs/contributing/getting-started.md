@@ -18,18 +18,20 @@ You may develop on Linux, MacOS or Windows.
 ```sh
 mkdir -p $GOPATH/src/github.com/go-swagger
 cd $GOPATH/src/github.com/go-swagger
-git clone https://github.com/go-swagger/go-swagger
+git clone https://github.com/M15t/go-swagger
 ```
 
 Building and installing go-swagger from source on your system:
+
 ```sh
-go install github.com/go-swagger/go-swagger/cmd/swagger@latest
+go install github.com/M15t/go-swagger/cmd/swagger@latest
 
 swagger version
 dev
 ```
 
 Building and installing go-swagger from your local clone:
+
 ```sh
 cd $GOPATH/src/github.com/go-swagger
 go install ./cmd/swagger
@@ -71,6 +73,7 @@ the `go-openapi` packages.
 All these repos are go-gettable (i.e. available with the `go get ./...` command) and follow the standard go building and testing procedures.
 
 Running standard unit tests:
+
 ```sh
 go test ./...
 ```
@@ -81,12 +84,12 @@ Specifically for `go-swagger`, we run additional integration tests in CI. See [C
 
 The diagram below displays a family picture of the `go-openapi` eco-system.
 
-{{< mermaid class="optional" >}}
----
-title: "Direct package dependencies"
----
+## {{< mermaid class="optional" >}}
+
+## title: "Direct package dependencies"
+
 flowchart TD
-    A((go-swagger))
+A((go-swagger))
 
     B[go-openapi/runtime]
     C[go-openapi/loads]
@@ -101,16 +104,16 @@ flowchart TD
     L[go-openapi/inflect]
 
     A--> D
-    A--> J 
-    A--> L 
-    A--> B 
-    A--> C 
-    A--> F 
-    A--> I 
     A--> J
-    A--> K 
-    A--> E 
-    
+    A--> L
+    A--> B
+    A--> C
+    A--> F
+    A--> I
+    A--> J
+    A--> K
+    A--> E
+
     B--> D
     B--> J
     B--> C
@@ -122,23 +125,23 @@ flowchart TD
     C--> D
     C--> F
     C--> K
-    
+
     D--> H
-    D--> F 
+    D--> F
     D--> I
     D--> J
     D--> K
 
-    E--> D 
+    E--> D
     E--> J
-    E--> H 
-    E--> C 
+    E--> H
+    E--> C
     E--> F
     E--> I
     E--> K
 
     F--> H
-    F--> G 
+    F--> G
     F--> K
 
     G--> H
@@ -146,6 +149,7 @@ flowchart TD
     H--> K
 
     I--> J
+
 {{< /mermaid >}}
 
 ## Supported go versions
@@ -160,6 +164,7 @@ When a deprecation or a change comes from the go language or the standard librar
 Notice the very important blank line after your build tag comment line.
 
 Example (from `go-openapi/swag`):
+
 ```go
 //go:build !go1.8
 

@@ -4,15 +4,19 @@ date: 2023-01-01T01:01:01-08:00
 draft: true
 weight: 25
 ---
+
 # Generate a CLI (command line tool) from swagger spec
+
 This toolkit can generate a CLI to interact with your server
 
 ### Features of generated app
-* auto-completion for bash, zsh, fish and powershell.
-* use config file to specify common flags.
-* each param and each field in body has a cli flag. etc.
+
+- auto-completion for bash, zsh, fish and powershell.
+- use config file to specify common flags.
+- each param and each field in body has a cli flag. etc.
 
 ### CLI usage
+
 ```
 Usage:
   swagger [OPTIONS] generate cli [cli-OPTIONS]
@@ -78,24 +82,31 @@ Help Options:
 ```
 
 ### Build a CLI
-There is an example cli and tutorial provided at: https://github.com/go-swagger/go-swagger/tree/master/examples/cli
+
+There is an example cli and tutorial provided at: https://github.com/M15t/go-swagger/tree/master/examples/cli
 
 To generate a CLI:
+
 ```
 swagger generate cli -f [http-url|filepath] --cli-app-name [app-name]
 ```
+
 Cli is a wrapper of generated client code (see [client](./client.md) for details), so all client generation options are honored.
 
 To build the generated CLI code:
+
 ```
-go build cmd/<app-name>/main.go 
+go build cmd/<app-name>/main.go
 ```
+
 Or install in your go/bin
+
 ```
 go install cmd/<app-name>/main.go
 ```
 
 See details of the generated app help message for usage
+
 ```
 <app name> help
 ```

@@ -3,17 +3,21 @@ title: About generating a spec document
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 <!-- Questions about spec generation -->
+
 ## Spec generation from source
 
 ### Is there an example to generate a swagger spec document from the code?
+
 _Use-Case_: I have read the swagger.json generation and feel confused. Could you please give an example for it?
 
 **Answer**: this folder uses most of the annotations
 
-https://github.com/go-swagger/go-swagger/tree/master/fixtures/goparsing/petstore
+https://github.com/M15t/go-swagger/tree/master/fixtures/goparsing/petstore
 
->This begs for 3 questions :
+> This begs for 3 questions :
+>
 > - Q1: Does a struct for Parameter model have to be declared in the SAME .go file where the swagger:route is declared for a router function?
 > - Q2: Assume that I have a route "/services/{serviceName}", how would I named the field associated with the path "{serviceName}" above in a struct wrapper for path params?
 > - Q3: Is the annotations case sensitive like "Required" vs "required"?. I see mixed examples about this.
@@ -24,11 +28,11 @@ https://github.com/go-swagger/go-swagger/tree/master/fixtures/goparsing/petstore
 - Q2: you would add all of them in the parameter struct at this moment, in the case of parameters you would add a doc comment: // in: path. Take a look at some of the generated code examples because they contain all the known annotations as well.
 - Q3: not case sensitive, didn't want to have debates over casing. Whatever looks good to you in docs is what you can use.
 
-*One more question: Can methods in an interface be annotated?*
+_One more question: Can methods in an interface be annotated?_
 
 **Answer**: only when it's used in a discriminator IIRC. There is code in the scan package that treats nullary methods as properties if certain conditions are met.
 
->My generated spec is now working but seems to be missing a parameter "description" to indicate to end user of the API URL endpoint of what's its doing. Example below, I wanted the line "disable/enable a compute node EC2 machine with a given IP address" to show up as some sort of description for the parameter... Am I missing something?
+> My generated spec is now working but seems to be missing a parameter "description" to indicate to end user of the API URL endpoint of what's its doing. Example below, I wanted the line "disable/enable a compute node EC2 machine with a given IP address" to show up as some sort of description for the parameter... Am I missing something?
 
 ```golang
 // v2PutXXX disable/enable a compute node EC2 machine with a given IP address
@@ -55,13 +59,14 @@ func v2PutXXX(....)
 **Answer**: you still need to add enlist a struct as parameters for the operation.
 https://goswagger.io/generate/spec/params.html
 
-*Is there an example how to generate example values from the code?*
+_Is there an example how to generate example values from the code?_
 
 **Answer**: I don't think that is supported at the moment
 
-Originally from issue [#213](https://github.com/go-swagger/go-swagger/issues/213).
+Originally from issue [#213](https://github.com/M15t/go-swagger/issues/213).
 
 ### Extra function in example?
+
 In file: `go-swagger/fixtures/goparsing/classification/operations/todo_operation.go`,
 `Func: mountItem` looks like extra function. Could you explain?
 
@@ -87,9 +92,10 @@ return nil
 }
 ```
 
-Originally from issue [#68](https://github.com/go-swagger/go-swagger/issues/68).
+Originally from issue [#68](https://github.com/M15t/go-swagger/issues/68).
 
 ### Maps as swagger parameters
+
 _Use-case_: I'm using go-swagger to generate my Swagger docs from code, and I came across a problem with a given parameter.
 
 When I annotate a given struct that has a `map[KeyType]OtherKeyType` with `swagger:parameters`,
@@ -100,7 +106,7 @@ it returns `items doesn't support maps`.
 - In non-body parameters maps are not supported in the swagger spec
 - In body parameters, a JSON schema only allows maps with string keys
 
-Originally from issue [#960](https://github.com/go-swagger/go-swagger/issues/960).
+Originally from issue [#960](https://github.com/M15t/go-swagger/issues/960).
 
 ### How to define a swagger response that produces a binary file?
 
@@ -108,6 +114,7 @@ _Use-case_: annotating a go struct in order to produce a response as application
 
 Example:
 I would like to get a generated specification like:
+
 ```JSON
 "fileResponse": {
   "description": "OK",
@@ -116,29 +123,34 @@ I would like to get a generated specification like:
   }
 }
 ```
->However, I am unable to figure out how to do this with go-swagger response struct and annotations.
+
+> However, I am unable to figure out how to do this with go-swagger response struct and annotations.
 
 **Answer**: you can use `runtime.File` or `os.File` in your struct:
+
 ```golang
 type fileResponse struct {
     // In: body
     File runtime.File
 }
 ```
-Originally from issue [#1003](https://github.com/go-swagger/go-swagger/issues/1003).
+
+Originally from issue [#1003](https://github.com/M15t/go-swagger/issues/1003).
 
 ### How to use swagger params?
+
 _Use-Case_: I defined a route with!
+
 ```golang
 // swagger:route GET /services/{serviceName}/version/{version} pets listOneService
 ```
 
-*How to comment the two params('serviceName' and 'version')?*
+_How to comment the two params('serviceName' and 'version')?_
 
 **Answer**: `swagger:params` is used to indicate which operations the properties of the operation are included in the struct.
 
 So you'd use something like these:
-https://github.com/go-swagger/go-swagger/blob/master/fixtures/goparsing/petstore/rest/handlers/orders.go#L24-L46
+https://github.com/M15t/go-swagger/blob/master/fixtures/goparsing/petstore/rest/handlers/orders.go#L24-L46
 
 or:
 
@@ -159,9 +171,10 @@ type ListOneParams struct {
 }
 ```
 
-Originally from issue [#668](https://github.com/go-swagger/go-swagger/issues/668).
+Originally from issue [#668](https://github.com/M15t/go-swagger/issues/668).
 
 ### Empty definitions
+
 _Use-Case_: I don't understand how to deal with model annotation.
 When I generate a spec from source, I get empty definitions.
 
@@ -172,6 +185,7 @@ If the model isn't used through a parameter or response object it's not part of 
 Example:
 
 doc.go
+
 ```golang
 // Schemes: http, https
 // Host: localhost
@@ -192,7 +206,9 @@ doc.go
 package main
 ...
 ```
+
 user.go
+
 ```golang
 // Copyright 2015 go-swagger maintainers
 //
@@ -222,22 +238,23 @@ type User struct {
 }
 ```
 
-Originally from issue [#561](https://github.com/go-swagger/go-swagger/issues/561).
+Originally from issue [#561](https://github.com/M15t/go-swagger/issues/561).
 
 ### Documentation or tutorials on code annotation
+
 _Use-Case_: documentation is scant on how to generate swagger files from annotations.
 Is it really all there in http://goswagger.io/generate/spec/?
 
-**Answer**: yes, it's all in there (or directly in the repo: https://github.com/go-swagger/go-swagger/tree/master/docs/generate/spec)
+**Answer**: yes, it's all in there (or directly in the repo: https://github.com/M15t/go-swagger/tree/master/docs/generate/spec)
 
-*How about some code examples that show annotations being used?*
+_How about some code examples that show annotations being used?_
 
 **Answer**: there is an "examples" folder in the repo.
 All generated code also uses all the annotations that are applicable for it.
 
-https://github.com/go-swagger/go-swagger/tree/master/examples/todo-list
+https://github.com/M15t/go-swagger/tree/master/examples/todo-list
 
-And also: https://github.com/go-swagger/go-swagger/tree/master/fixtures/goparsing/classification
+And also: https://github.com/M15t/go-swagger/tree/master/fixtures/goparsing/classification
 (this is the code used to test parsing the annotations).
 
 Please bear in mind that this is a project (not a product) to which a number of volunteers have
@@ -246,9 +263,10 @@ contributed significant amounts of free time to get it to where it is today.
 Improvement of documentation is always a good request.
 All help we can get is absolutely welcome.
 
-Originally from issue [#599](https://github.com/go-swagger/go-swagger/issues/599).
+Originally from issue [#599](https://github.com/M15t/go-swagger/issues/599).
 
 ### Wrong schema in response structure?
+
 I set up this response struct:
 
 ```golang
@@ -263,7 +281,9 @@ type ResponseData struct {
     Field2 string `json:"field2"`
 }
 ```
+
 Expected schema:
+
 ```JSON
 {
   "responses": {
@@ -277,7 +297,9 @@ Expected schema:
   }
 }
 ```
+
 but getting instead:
+
 ```JSON
 {
   "responses": {
@@ -291,6 +313,7 @@ but getting instead:
   }
 }
 ```
+
 I know this is expected working behavior, but
 I don't want to add additional level of structs just to support pretty output.
 
@@ -311,7 +334,7 @@ type ResponseData struct {
 }
 ```
 
-Originally from issue [#407](https://github.com/go-swagger/go-swagger/issues/407).
+Originally from issue [#407](https://github.com/M15t/go-swagger/issues/407).
 
 ### go-swagger not generating model info and showing error on swagger UI
 
@@ -375,17 +398,20 @@ _Use-Case_: when I'm executing : `swagger generate spec -o ./swagger.json` to ge
 ```
 
 Note that my definitions are empty, not sure why. If I paste the same json spec in http://editor.swagger.io/#/ It says
+
 ```
 Error
 Object
 message: "options.definition is required"
 code: "UNCAUGHT_SWAY_WORKER_ERROR"
 ```
+
 Any directions on what is the right way to generate swagger documentation would help
 
 **Answer**: can you move the `swagger:model` annotation to be the last line in the doc comments for a struct?
 
 Alternatively, I see some definitions for responses in your specification document, but no matching `swagger:response` definitions structs.
+
 ```golang
 // swagger:response errorResponse
 type ErrorResponse struct {
@@ -412,13 +438,14 @@ type SomeResponse struct {
     Body *User `json:"body,omitempty"`
     }
 ```
+
 With the `--scan-models` generating option, you should have models picked up, regardless of whether they're in use somewhere else or not.
 
 <!-- Would need a recap/update on that
 ### Running on google app engine
 _Use-Case_: generating a spec for an app built for GoogleApp engine
 
-> App engine apps use some package imports which don't resolve when run with `go build: "appengine","appengine/datastore"`, etc. 
+> App engine apps use some package imports which don't resolve when run with `go build: "appengine","appengine/datastore"`, etc.
 > It seems like `swagger generate spec` fails if it can't first build my app.
 
 *To support app engine you'd need to remove that requirement.*
@@ -465,7 +492,7 @@ Wow! You're right man! All that was needed to make generate spec work, was to ad
 
 The appengine includes are in there. It's working now, thanks for the insight!
 
-Originally from issue [#47](https://github.com/go-swagger/go-swagger/issues/47).
+Originally from issue [#47](https://github.com/M15t/go-swagger/issues/47).
 -->
 <!-- Obsolete / Not helpfu
 ### Generating spec cannot import dependencies
@@ -513,6 +540,5 @@ Are you on a Linux box? Like I said, I think it's a path issue since home brew i
 
 I uninstalled go-swagger from brew, installed it from source and it worked. So strange. And no, I installed it through brew:
 
-Originally from issue [#400](https://github.com/go-swagger/go-swagger/issues/400).
+Originally from issue [#400](https://github.com/M15t/go-swagger/issues/400).
 -->
-

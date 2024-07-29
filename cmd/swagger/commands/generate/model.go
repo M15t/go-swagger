@@ -18,7 +18,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/go-swagger/go-swagger/generator"
+	"github.com/M15t/go-swagger/generator"
 )
 
 type modelOptions struct {

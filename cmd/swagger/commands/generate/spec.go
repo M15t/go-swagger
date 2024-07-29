@@ -20,7 +20,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/go-swagger/go-swagger/codescan"
+	"github.com/M15t/go-swagger/codescan"
 
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/spec"

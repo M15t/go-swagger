@@ -3,11 +3,12 @@ title: Composed security requirements
 date: 2023-01-01T01:01:01-08:00
 draft: true
 ---
+
 # Composed Security Requirements
 
 The full code of this example is [here][example_code].
 
-This sample API demonstrates how to compose several authentication schemes 
+This sample API demonstrates how to compose several authentication schemes
 and configure complex security requirements for your operations.
 
 In this example, we mix security requirements with AND and OR constraints.
@@ -16,19 +17,19 @@ This API apes a very simple market place with customers and resellers of items.
 
 Personas:
 
-  - as a first time user, I want to see all items on sales
-  - as a registered customer, I want to post orders for items and 
-    consult my past orders
-  - as a registered reseller, I want to see all pending orders on the items 
-    I am selling on the market place
-  - as a reseller managing my own inventories, I want to post replenishment orders for the items I provide
-  - as a registered user, I want to consult my personal account infos
+- as a first time user, I want to see all items on sales
+- as a registered customer, I want to post orders for items and
+  consult my past orders
+- as a registered reseller, I want to see all pending orders on the items
+  I am selling on the market place
+- as a reseller managing my own inventories, I want to post replenishment orders for the items I provide
+- as a registered user, I want to consult my personal account infos
 
 The playground situation we defined is as follows:
 
-  - every known user is authenticated using a basic username:password pair
-  - resellers are authenticated using API keys - we leave them the option to authenticate using a header or a query param
-  - any registered user (customer or reseller) will add a signed JWT to access more API endpoints
+- every known user is authenticated using a basic username:password pair
+- resellers are authenticated using API keys - we leave them the option to authenticate using a header or a query param
+- any registered user (customer or reseller) will add a signed JWT to access more API endpoints
 
 Authentication with tokens allows us to inspect the signed claims in this token.
 
@@ -36,9 +37,8 @@ Obviously, there are several ways to achieve the same result. We just wanted to 
 security requirements may be composed out of several schemes, and use API authorizers.
 
 > Note that we used the "OAuth2" declaration here but don't actually follow an OAuth2 workflow:
-> our intend here is to be able to extract scopes from the claims passed in a JWT token 
+> our intend here is to be able to extract scopes from the claims passed in a JWT token
 > (the only way to manipulate scoped authorizers with Swagger 2.0 is to declare them with type `oauth2`).
-
 
 ### Caveats
 
@@ -47,12 +47,12 @@ security requirements may be composed out of several schemes, and use API author
 3. The "OAuth2" type supports other methods than the "Authorization: Bearer" header: the token may be passed
    using the `access_token` query param (or urlEncoded form value)
 4. Unfortunately, Swagger 2.0 only supports "OAuth2" as a scoped method
-5. There is one single principal and several methods to define it. Getting to these different intermediary principals requires some 
+5. There is one single principal and several methods to define it. Getting to these different intermediary principals requires some
    interaction with the http request's context (e.g. using `middleware.SecurityPrincipalFrom(req)`). This is not demonstrated here for now.
 
 ### Prerequisites
 
-`golang-jwt/jwt` ships with a nice JWT CLI utility. Although not required, you might want to install it and 
+`golang-jwt/jwt` ships with a nice JWT CLI utility. Although not required, you might want to install it and
 play with your own tokens:
 
 - `go install github.com/golang-jwt/jwt/cmd/jwt`
@@ -83,13 +83,13 @@ securityDefinitions:
     # This scheme uses the header: "Authorization: Bearer {base64 encoded string representing a JWT}"
     # Alternatively, the query param: "access_token" may be used.
     #
-    # In our scenario, we must use the query param version in order to avoid 
+    # In our scenario, we must use the query param version in order to avoid
     # passing several headers with key 'Authorization'
     type: oauth2
     # The flow and URLs in spec are for documentary purpose: go-swagger does not implement OAuth workflows
     flow: accessCode
-    authorizationUrl: 'https://dummy.oauth.net/auth'
-    tokenUrl: 'https://dumy.oauth.net/token'
+    authorizationUrl: "https://dummy.oauth.net/auth"
+    tokenUrl: "https://dumy.oauth.net/token"
     # Required scopes are passed by the runtime to the authorizer
     scopes:
       customer: scope of registered customers
@@ -116,44 +116,42 @@ paths:
       description: |
         Everybody should be able to access this operation
       security: []
-...
 ```
 
 - We created endpoints with various compositions of our 3 security schemes
 
 Example: `isRegistered` **AND** `hasRole[ customer ]`
+
 ```yaml
-  /order/{orderID}:
-    get:
-      summary: retrieves an order
-      operationId: GetOrder
-      description: |
-        Only registered customers should be able to retrieve orders
-      security: 
-        - isRegistered: []
-          hasRole: [ customer ]  
-...
+/order/{orderID}:
+  get:
+    summary: retrieves an order
+    operationId: GetOrder
+    description: |
+      Only registered customers should be able to retrieve orders
+    security:
+      - isRegistered: []
+        hasRole: [customer]
 ```
 
 Example: (`isRegistered` **AND** `hasRole[ customer ]`) **OR** (`isReseller` **AND** `hasRole[ inventoryManager ]`) **OR** (`isResellerQuery` **AND** `hasRole[ inventoryManager ]`)
 
 ```yaml
-  /order/add:
-    post:
-      summary: post a new order
-      operationId: AddOrder
-      description: |
-        Registered customers should be able to add purchase orders.
-        Registered inventory managers should be able to add replenishment orders.
+/order/add:
+  post:
+    summary: post a new order
+    operationId: AddOrder
+    description: |
+      Registered customers should be able to add purchase orders.
+      Registered inventory managers should be able to add replenishment orders.
 
-      security:
-        - isRegistered: []
-          hasRole: [ customer ]  
-        - isReseller: []
-          hasRole: [ inventoryManager ]  
-        - isResellerQuery: []
-          hasRole: [ inventoryManager ]  
-...
+    security:
+      - isRegistered: []
+        hasRole: [customer]
+      - isReseller: []
+        hasRole: [inventoryManager]
+      - isResellerQuery: []
+        hasRole: [inventoryManager]
 ```
 
 Example: isReseller **OR** isResellerQuery
@@ -161,18 +159,18 @@ Example: isReseller **OR** isResellerQuery
 This one allows to pass an API key either by header or by query param.
 
 ```yaml
-  /orders/{itemID}:
-    get:
-      summary: retrieves all orders for an item
-      operationId: GetOrdersForItem
-      description: |
-        Only registered resellers should be able to search orders for an item
-      security:
-        - isReseller: []
-        - isResellerQuery: []
-...
+/orders/{itemID}:
+  get:
+    summary: retrieves all orders for an item
+    operationId: GetOrdersForItem
+    description: |
+      Only registered resellers should be able to search orders for an item
+    security:
+      - isReseller: []
+      - isResellerQuery: []
 ```
-We need to specify a security principal in the model and generate the server with this. Operations will be passed this principal as 
+
+We need to specify a security principal in the model and generate the server with this. Operations will be passed this principal as
 parameter upon successful authentication.
 
 When using the scoped authentication ("oauth2"), our custom authorizer with pass all claimed roles that match the security requirement in the principal.
@@ -181,17 +179,17 @@ When using the scoped authentication ("oauth2"), our custom authorizer with pass
 definitions:
   ...
   principal:
-    type: object 
-    properties: 
-      name: 
+    type: object
+    properties:
+      name:
         type: string
       roles:
-        type: array 
-        items: 
+        type: array
+        items:
           type: string
 ```
 
-### Generate the server 
+### Generate the server
 
 ```shell
 swagger generate server -A multi-auth-example -P models.Principal -f ./swagger.yml
@@ -202,13 +200,14 @@ Files `restapi/configure_multi_auth_example.go` and `auth/authorizers.go` are no
 ### Testing configuration
 
 #### Test tokens and keys
-In `./tokens`, we provided with some ready made tokens. If you have installed the `jwt` CLI, 
+
+In `./tokens`, we provided with some ready made tokens. If you have installed the `jwt` CLI,
 you can play around an build some different claims as JWT (see the `make-tokens.sh` script for usage).
 
-> **NOTE:** tokens need a pair of public / private keys (for the signer and the verifier). We generated these keys 
+> **NOTE:** tokens need a pair of public / private keys (for the signer and the verifier). We generated these keys
 > for testing purpose in the `keys` directory (RSA256 keys).
 
-Our JWT defines "roles" as custom claim (in `auth/authorizers.go`): this means the signer of the token acknowledges the 
+Our JWT defines "roles" as custom claim (in `auth/authorizers.go`): this means the signer of the token acknowledges the
 holder of the token to be enabled for these.
 
 ```go
@@ -269,7 +268,8 @@ func configureAPI(api *operations.MultiAuthExampleAPI) http.Handler {
 These authorizers are implemented in `auth/authorizers.go`.
 
 Here is the basic one:
-```go 
+
+```go
 // IsRegistered determines if the user is properly registered,
 // i.e if a valid username:password pair has been provided
 func IsRegistered(user, pass string) (*models.Principal, error) {
@@ -289,7 +289,7 @@ func IsRegistered(user, pass string) (*models.Principal, error) {
 We did not set up actual operations: they are mere debug loggers, returning a "Not implemented" error.
 We log on the serve console how the principal is passed to the operation.
 
-```go 
+```go
 	api.AddOrderHandler = operations.AddOrderHandlerFunc(func(params operations.AddOrderParams, principal *models.Principal) middleware.Responder {
 		logger.Warningf("AddOrder called with params: %s, and principal: %s", spew.Sdump(params.Order), spew.Sdump(principal))
 		return middleware.NotImplemented("operation .AddOrder has not yet been implemented")
@@ -304,12 +304,13 @@ go run ./cmd/multi-auth-example-server/main.go --port 43016
 
 ### Exercise your authorizers
 
-There is a little exercising utility script: `exerciser.sh`. 
+There is a little exercising utility script: `exerciser.sh`.
 This script pushes a sequence of curl requests. You may customize it to your liking and further exercise the API.
 
 Authorizations actions and operations are logged on the server console.
 
 Example:
+
 ```shell
 curl \
   --verbose \
@@ -334,6 +335,7 @@ curl \
 ```
 
 Another example:
+
 ```shell
 basic=`echo "ivan:terrible"|tr -d '\n'|base64 -i`
 curl \
@@ -370,4 +372,4 @@ Content-Length: 51
 "operation .AddOrder has not yet been implemented"
 ```
 
-[example_code]: https://github.com/go-swagger/go-swagger/blob/master/examples/composed-auth/
+[example_code]: https://github.com/M15t/go-swagger/blob/master/examples/composed-auth/
